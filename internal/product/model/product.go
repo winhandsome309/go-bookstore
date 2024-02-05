@@ -16,3 +16,11 @@ type Product struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 	DeletedAt   time.Time `json:"deleted_at"`
 }
+
+type UpdateProductReq struct {
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	Price       int    `json:"price,omitempty"`
+	Img_url     string `json:"img_url,omitempty"`
+	Quantity    int    `json:"quantity,omitempty"`
+}

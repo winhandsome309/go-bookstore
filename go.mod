@@ -5,6 +5,7 @@ go 1.21.5
 require gorm.io/gorm v1.25.6
 
 require (
+	github.com/gin-contrib/cors v1.5.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.4.3 // indirect

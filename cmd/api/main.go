@@ -5,6 +5,7 @@ import (
 	"go-bookstore/internal/product/model"
 	"go-bookstore/pkg/config"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,10 +19,12 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
-	// Create server
+	// Use CORS
+	r.Use(cors.Default())
+
+	// Init servers
 	productHttp.Routes(r, db)
 
-	// Init routes
-	// routes.InitRoutes(r)
+	// Port to run
 	r.Run(":8080")
 }
