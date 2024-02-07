@@ -55,6 +55,6 @@ func (r *ProductRepo) UpdateProduct(c *gin.Context, product *model.Product, req 
 }
 
 func (r *ProductRepo) DeleteProduct(c *gin.Context, product *model.Product) error {
-	err := r.db.Delete(product).Error
+	err := r.db.Unscoped().Delete(product).Error
 	return err
 }

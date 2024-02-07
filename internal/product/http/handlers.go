@@ -2,12 +2,12 @@
 package http
 
 import (
+	"go-bookstore/internal/product/model"
 	"go-bookstore/internal/product/service"
 	"net/http"
 
-	"go-bookstore/internal/product/model"
-
 	"github.com/gin-gonic/gin"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -42,12 +42,13 @@ func (h *ProductHandler) GetProductById(c *gin.Context) {
 
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var productNew model.Product
-	if err := c.ShouldBindJSON(&productNew); c.Request.Body == nil || err != nil {
+	if err := c.ShouldBind(&productNew); c.Request.Body == nil || err != nil {
 		log.Error("Failed to get body", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid parameters",
 		})
 	}
+
 	err := h.service.CreateProduct(c, &productNew)
 	if err != nil {
 		log.Error("Create failed", err)
@@ -63,7 +64,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	productId := c.Param("id")
 	var req model.UpdateProductReq
-	if err := c.ShouldBindJSON(&req); c.Request.Body == nil || err != nil {
+	if err := c.ShouldBind(&req); c.Request.Body == nil || err != nil {
 		log.Error("Failed to get body", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid parameters"})
 		return
