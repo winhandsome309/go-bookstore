@@ -3,6 +3,7 @@ package main
 import (
 	productHttp "go-bookstore/internal/product/http"
 	"go-bookstore/internal/product/model"
+	userHttp "go-bookstore/internal/user/http"
 	"go-bookstore/pkg/config"
 
 	"github.com/gin-contrib/cors"
@@ -24,6 +25,7 @@ func main() {
 
 	// Init servers
 	productHttp.Routes(r, db)
+	userHttp.Routes(r, db)
 
 	// Port to run
 	r.Run(":8080")
