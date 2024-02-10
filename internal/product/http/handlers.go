@@ -2,8 +2,10 @@
 package http
 
 import (
+	"fmt"
 	"go-bookstore/internal/product/model"
 	"go-bookstore/internal/product/service"
+	model_user "go-bookstore/internal/user/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +28,25 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get all product"})
 		return
 	}
-	c.JSON(http.StatusOK, products)
+	// c.JSON(http.StatusOK, products)
+	userJson, ok := c.Get("user")
+	if ok {
+		user := userJson.(model_user.User)
+		fmt.Println(user.Balance)
+		c.JSON(http.StatusOK, gin.H{
+			"products": products,
+			"user": gin.H{
+				"email":   user.Email,
+				"balance": user.Balance,
+			},
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"products": products,
+			"user":     nil,
+		},
+		)
+	}
 }
 
 func (h *ProductHandler) GetProductById(c *gin.Context) {

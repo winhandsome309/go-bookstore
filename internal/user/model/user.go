@@ -9,6 +9,7 @@ type User struct {
 	Email      string    `json:"email"`
 	Password   string    `json:"password"`
 	Role       string    `json:"role"`
+	Balance    int       `json:"balance"`
 	Created_at time.Time `json:"created_at"`
 	Updated_at time.Time `json:"updated_at"`
 	Deleted_at time.Time `json:"deleted_at"`

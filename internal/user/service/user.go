@@ -10,13 +10,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var jwtKey = []byte("30092002")
 
 type IUserService interface {
 	Register(c *gin.Context, userReq *model.UserReq) error
-	SignIn(c *gin.Context, userLogin *model.UserLogin) (string, time.Time, error)
+	SignIn(c *gin.Context, userLogin *model.UserLogin) (string, int64, error)
 	RefreshToken(c *gin.Context) error
 }
 
@@ -40,27 +41,27 @@ func (s *UserService) Register(c *gin.Context, userReq *model.UserReq) error {
 	return nil
 }
 
-func (s *UserService) SignIn(c *gin.Context, userLogin *model.UserLogin) (string, time.Time, error) {
+func (s *UserService) SignIn(c *gin.Context, userLogin *model.UserLogin) (string, int64, error) {
 	user, err := s.repo.GetUserByEmail(c, userLogin.Email)
 	if err != nil {
-		return "", time.Time{}, err
+		return "", 0, err
 	}
-	if user.Password != userLogin.Password {
-		return "", time.Time{}, errors.New("Wrong password")
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userLogin.Password)); err != nil {
+		return "", 0, errors.New("Wrong password")
 	}
-	expTime := time.Now().Add(5 * time.Minute)
+	expTime := time.Now().Add(20 * time.Minute).Unix()
 	tokenContent := jwt.MapClaims{
 		"payload": map[string]interface{}{
 			"id":    user.Id,
 			"email": user.Email,
 			"role":  user.Role,
 		},
-		"exp": expTime.Unix(),
+		"exp": expTime,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenContent)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		return "", time.Time{}, errors.New("Failed to generate access token")
+		return "", 0, errors.New("Failed to generate access token")
 	}
 	return tokenString, expTime, nil
 }

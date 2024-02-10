@@ -1,7 +1,9 @@
 package http
 
 import (
+	"fmt"
 	"go-bookstore/internal/user/service"
+	"time"
 
 	"go-bookstore/internal/user/model"
 
@@ -9,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserHandlers struct {
@@ -25,6 +28,8 @@ func (h *UserHandlers) Register(c *gin.Context) {
 		log.Error("Invalid parameters", err)
 		return
 	}
+	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(userReq.Password), 14)
+	userReq.Password = string(passwordHash)
 	err := h.service.Register(c, &userReq)
 	if err != nil {
 		log.Error("Register Fail", err)
@@ -37,20 +42,35 @@ func (h *UserHandlers) Register(c *gin.Context) {
 func (h *UserHandlers) SignIn(c *gin.Context) {
 	var userLogin model.UserLogin
 	if err := c.ShouldBind(&userLogin); c.Request.Body == nil || err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid parameters",
 		})
 		return
 	}
-	tokenString, expTime, err := h.service.SignIn(c, &userLogin)
+	tokenString, _, err := h.service.SignIn(c, &userLogin)
 	if err != nil {
 		log.Error(err)
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "User not found",
+		})
 		return
 	}
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expTime,
+	maxAge := time.Now().Unix() + int64(60)
+	c.SetCookie("Authorization", tokenString, int(maxAge), "/", "", false, false)
+
+	// http.SetCookie(c.Writer, &http.Cookie{
+	// 	Name:     "Authorization",
+	// 	Value:    tokenString,
+	// 	Expires:  time.Now().Add(time.Hour * 24),
+	// 	HttpOnly: true,
+	// 	SameSite: http.SameSiteDefaultMode,
+	// 	Secure:   false,
+	// 	Path:     "/",
+	// })
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"message": "User signin successfully",
 	})
 }
 
