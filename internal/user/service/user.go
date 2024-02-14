@@ -18,7 +18,7 @@ var jwtKey = []byte("30092002")
 type IUserService interface {
 	Register(c *gin.Context, userReq *model.UserReq) error
 	SignIn(c *gin.Context, userLogin *model.UserLogin) (string, int64, error)
-	RefreshToken(c *gin.Context) error
+	SignOut(c *gin.Context) (string, error)
 }
 
 type UserService struct {
@@ -66,7 +66,15 @@ func (s *UserService) SignIn(c *gin.Context, userLogin *model.UserLogin) (string
 	return tokenString, expTime, nil
 }
 
-func (s *UserService) RefreshToken(c *gin.Context) error {
-	return nil
-
+func (s *UserService) SignOut(c *gin.Context) (string, error) {
+	tokenContent := jwt.MapClaims{
+		"payload": "",
+		"exp":     time.Now().Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenContent)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		return "", errors.New("Failed to generate access token")
+	}
+	return tokenString, nil
 }

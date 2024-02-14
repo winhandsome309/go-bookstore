@@ -11,7 +11,7 @@ import (
 
 type IProductRepo interface {
 	GetAllProduct(c *gin.Context) (*[]model.Product, error)
-	GetProductById(c *gin.Context, id string) (*model.Product, error)
+	GetProductById(c *gin.Context, id int) (*model.Product, error)
 	CreateProduct(c *gin.Context, product *model.Product) error
 	UpdateProduct(c *gin.Context, product *model.Product, req *model.UpdateProductReq) error
 	DeleteProduct(c *gin.Context, product *model.Product) error
@@ -34,7 +34,7 @@ func (r *ProductRepo) GetAllProduct(c *gin.Context) (*[]model.Product, error) {
 	return &products, nil
 }
 
-func (r *ProductRepo) GetProductById(c *gin.Context, id string) (*model.Product, error) {
+func (r *ProductRepo) GetProductById(c *gin.Context, id int) (*model.Product, error) {
 	var product model.Product
 	err := r.db.Where("id = ?", id).First(&product).Error
 	if err != nil {
@@ -55,6 +55,6 @@ func (r *ProductRepo) UpdateProduct(c *gin.Context, product *model.Product, req 
 }
 
 func (r *ProductRepo) DeleteProduct(c *gin.Context, product *model.Product) error {
-	err := r.db.Unscoped().Delete(product).Error
+	err := r.db.Delete(product).Error
 	return err
 }

@@ -2,11 +2,11 @@
 package http
 
 import (
-	"fmt"
 	"go-bookstore/internal/product/model"
 	"go-bookstore/internal/product/service"
 	model_user "go-bookstore/internal/user/model"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -32,10 +32,10 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 	userJson, ok := c.Get("user")
 	if ok {
 		user := userJson.(model_user.User)
-		fmt.Println(user.Balance)
 		c.JSON(http.StatusOK, gin.H{
 			"products": products,
 			"user": gin.H{
+				"id":      user.Id,
 				"email":   user.Email,
 				"balance": user.Balance,
 			},
@@ -50,11 +50,12 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 }
 
 func (h *ProductHandler) GetProductById(c *gin.Context) {
-	productId := c.Param("id")
+	id := c.Param("id")
+	productId, _ := strconv.Atoi(id)
 	product, err := h.service.GetProductById(c, productId)
 	if err != nil {
-		log.Error("Product ("+productId+") not found", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Product (" + productId + ") not found"})
+		log.Error("Product not found", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Product not found"})
 		return
 	}
 	c.JSON(http.StatusOK, product)
@@ -82,13 +83,14 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 }
 
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
-	productId := c.Param("id")
+	id := c.Param("id")
 	var req model.UpdateProductReq
 	if err := c.ShouldBind(&req); c.Request.Body == nil || err != nil {
 		log.Error("Failed to get body", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid parameters"})
 		return
 	}
+	productId, _ := strconv.Atoi(id)
 	product, err := h.service.UpdateProduct(c, productId, &req)
 	if err != nil {
 		log.Error("Update failed", err)
@@ -102,7 +104,8 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 }
 
 func (h *ProductHandler) DeleteProduct(c *gin.Context) {
-	productId := c.Param("id")
+	id := c.Param("id")
+	productId, _ := strconv.Atoi(id)
 	err := h.service.DeleteProduct(c, productId)
 	if err != nil {
 		log.Error("Delete failed", err)

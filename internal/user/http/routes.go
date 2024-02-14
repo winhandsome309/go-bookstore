@@ -17,7 +17,8 @@ func Routes(r *gin.Engine, db *gorm.DB) {
 	{
 		userRoutes.POST("/register", userHandlers.Register)
 		userRoutes.POST("/signin", userHandlers.SignIn)
-		// userRoutes.POST("/refresh", userHandlers.RefreshToken)
+		userRoutes.POST("/signout", userHandlers.SignOut)
 	}
+	// r.Handle("POST", "/auth/signout", userHandlers.SignOut)
 	// r.Handle("POST", "auth/signin", userHandlers.SignIn)
 }

@@ -11,10 +11,10 @@ import (
 
 type IProductService interface {
 	GetAllProduct(c *gin.Context) (*[]model.Product, error)
-	GetProductById(c *gin.Context, productId string) (*model.Product, error)
+	GetProductById(c *gin.Context, productId int) (*model.Product, error)
 	CreateProduct(c *gin.Context, product *model.Product) error
-	UpdateProduct(c *gin.Context, productId string, req *model.UpdateProductReq) (*model.Product, error)
-	DeleteProduct(c *gin.Context, productId string) error
+	UpdateProduct(c *gin.Context, productId int, req *model.UpdateProductReq) (*model.Product, error)
+	DeleteProduct(c *gin.Context, productId int) error
 }
 
 type ProductService struct {
@@ -33,7 +33,7 @@ func (s *ProductService) GetAllProduct(c *gin.Context) (*[]model.Product, error)
 	return products, nil
 }
 
-func (s *ProductService) GetProductById(c *gin.Context, productId string) (*model.Product, error) {
+func (s *ProductService) GetProductById(c *gin.Context, productId int) (*model.Product, error) {
 	product, err := s.repo.GetProductById(c, productId)
 	if err != nil {
 		return nil, err
@@ -49,10 +49,10 @@ func (s *ProductService) CreateProduct(c *gin.Context, product *model.Product) e
 	return nil
 }
 
-func (s *ProductService) UpdateProduct(c *gin.Context, productId string, req *model.UpdateProductReq) (*model.Product, error) {
+func (s *ProductService) UpdateProduct(c *gin.Context, productId int, req *model.UpdateProductReq) (*model.Product, error) {
 	product, err := s.repo.GetProductById(c, productId)
 	if err != nil {
-		log.Error("Product (" + productId + ") not found")
+		log.Error("Product not found")
 		return nil, err
 	}
 	err = s.repo.UpdateProduct(c, product, req)
@@ -63,7 +63,7 @@ func (s *ProductService) UpdateProduct(c *gin.Context, productId string, req *mo
 	return product, nil
 }
 
-func (s *ProductService) DeleteProduct(c *gin.Context, productId string) error {
+func (s *ProductService) DeleteProduct(c *gin.Context, productId int) error {
 	product, err := s.repo.GetProductById(c, productId)
 	if err != nil {
 		return err

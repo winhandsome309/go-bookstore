@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"go-bookstore/internal/user/service"
 	"time"
 
@@ -42,7 +41,6 @@ func (h *UserHandlers) Register(c *gin.Context) {
 func (h *UserHandlers) SignIn(c *gin.Context) {
 	var userLogin model.UserLogin
 	if err := c.ShouldBind(&userLogin); c.Request.Body == nil || err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid parameters",
 		})
@@ -56,8 +54,8 @@ func (h *UserHandlers) SignIn(c *gin.Context) {
 		})
 		return
 	}
-	maxAge := time.Now().Unix() + int64(60)
-	c.SetCookie("Authorization", tokenString, int(maxAge), "/", "", false, false)
+	maxAge := int(time.Now().Unix() + int64(60))
+	c.SetCookie("Authorization", tokenString, maxAge, "/", "", false, false)
 
 	// http.SetCookie(c.Writer, &http.Cookie{
 	// 	Name:     "Authorization",
@@ -74,6 +72,18 @@ func (h *UserHandlers) SignIn(c *gin.Context) {
 	})
 }
 
-func (h *UserHandlers) RefreshToken(c *gin.Context) {
-
+func (h *UserHandlers) SignOut(c *gin.Context) {
+	// tokenString, err := h.service.SignOut(c)
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "log out fail",
+		})
+		return
+	}
+	c.SetCookie("Authorization", tokenString, -1, "/", "", false, false)
+	c.JSON(http.StatusAccepted, gin.H{
+		"message": "Sign out successfully",
+	})
 }

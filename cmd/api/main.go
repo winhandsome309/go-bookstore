@@ -1,13 +1,12 @@
 package main
 
 import (
+	orderHttp "go-bookstore/internal/order/http"
 	productHttp "go-bookstore/internal/product/http"
 	"go-bookstore/internal/product/model"
 	userHttp "go-bookstore/internal/user/http"
 	"go-bookstore/pkg/config"
 	"net/http"
-
-	"go-bookstore/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,7 +51,6 @@ func main() {
 	// r.Use(cors.Default())
 
 	r.Use(corsMiddleware)
-	r.Use(middleware.JWTAuth())
 
 	// r.Use(cors.New(cors.Config{
 	// 	AllowOrigins:     []string{"http://127.0.0.1:3000"},
@@ -66,6 +64,7 @@ func main() {
 	// Init servers
 	productHttp.Routes(r, db)
 	userHttp.Routes(r, db)
+	orderHttp.Routes(r, db)
 
 	// Port to run
 	r.Run(":8080")

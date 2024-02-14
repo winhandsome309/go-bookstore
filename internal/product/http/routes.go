@@ -4,6 +4,8 @@ import (
 	"go-bookstore/internal/product/repository"
 	"go-bookstore/internal/product/service"
 
+	"go-bookstore/pkg/middleware"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -13,7 +15,7 @@ func Routes(r *gin.Engine, db *gorm.DB) {
 	productService := service.NewProductService(productRepo)
 	productHandler := NewProductHandler(productService)
 
-	productRoute := r.Group("/products")
+	productRoute := r.Group("/products", middleware.JWTAuth())
 	{
 		productRoute.GET("", productHandler.GetAllProduct)
 		productRoute.POST("", productHandler.CreateProduct)
