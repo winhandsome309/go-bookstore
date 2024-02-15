@@ -1,6 +1,7 @@
 package main
 
 import (
+	locationHttp "go-bookstore/internal/location/http"
 	orderHttp "go-bookstore/internal/order/http"
 	productHttp "go-bookstore/internal/product/http"
 	"go-bookstore/internal/product/model"
@@ -65,6 +66,7 @@ func main() {
 	productHttp.Routes(r, db)
 	userHttp.Routes(r, db)
 	orderHttp.Routes(r, db)
+	locationHttp.Routes(r, db)
 
 	// Port to run
 	r.Run(":8080")
