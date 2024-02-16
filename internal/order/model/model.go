@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	model_product "go-bookstore/internal/product/model"
+
 	"gorm.io/gorm"
 )
 
@@ -59,15 +61,14 @@ func (list listOrderLine) Value() (driver.Value, error) {
 }
 
 type Order struct {
-	Id         int `json:"id" gorm:"unique,not null;index;primaryKey"`
-	CustomerID int `json:"customer_id"`
-	TotalItem  int `json:"total_item"`
-	TotalPrice int `json:"total_price"`
-	// Lines      listOrderLine  `json:"lines" gorm:"type:text"`
-	Lines     listOrderLine  `json:"lines" gorm:"type:integer[]"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at"`
+	Id         int            `json:"id" gorm:"unique,not null;index;primaryKey"`
+	CustomerID int            `json:"customer_id"`
+	TotalItem  int            `json:"total_item"`
+	TotalPrice int            `json:"total_price"`
+	Lines      listOrderLine  `json:"lines" gorm:"type:integer[]"`
+	CreatedAt  time.Time      `json:"created_at"`
+	UpdatedAt  time.Time      `json:"updated_at"`
+	DeletedAt  gorm.DeletedAt `json:"deleted_at"`
 }
 
 type OrderLine struct {
@@ -81,23 +82,18 @@ type OrderLine struct {
 	DeletedAt gorm.DeletedAt `form:"deleted_at" json:"deleted_at"`
 }
 
-type OrderLineProduct struct {
-	Id            int            `json:"id"`
-	ProductId     int            `json:"product_id"`
-	ProductTitle  string         `json:"product_title"`
-	ProductImgUrl string         `json:"product_img_url"`
-	OrderId       int            `json:"order_id"`
-	Quantity      int            `json:"quantity"`
-	Price         int            `json:"price"`
-	CreatedAt     time.Time      `json:"created_at"`
-	UpdatedAt     time.Time      `json:"updated_at"`
-	DeletedAt     gorm.DeletedAt `json:"deleted_at"`
+type OrderResponse struct {
+	Id         int                  `json:"id" gorm:"unique,not null;index;primaryKey"`
+	CustomerID int                  `json:"customer_id"`
+	TotalItem  int                  `json:"total_item"`
+	TotalPrice int                  `json:"total_price"`
+	Lines      []*OrderLineResponse `json:"lines"`
 }
 
-type OrderResponse struct {
-	Id         int          `json:"id" gorm:"unique,not null;index;primaryKey"`
-	CustomerID int          `json:"customer_id"`
-	TotalItem  int          `json:"total_item"`
-	TotalPrice int          `json:"total_price"`
-	Lines      []*OrderLine `json:"lines"`
+type OrderLineResponse struct {
+	Id       int                    `json:"id"`
+	Product  *model_product.Product `json:"product"`
+	OrderId  int                    `json:"order_id"`
+	Quantity int                    `json:"quantity"`
+	Price    int                    `json:"price"`
 }

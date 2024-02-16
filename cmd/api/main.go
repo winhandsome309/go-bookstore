@@ -5,6 +5,7 @@ import (
 	orderHttp "go-bookstore/internal/order/http"
 	productHttp "go-bookstore/internal/product/http"
 	"go-bookstore/internal/product/model"
+	shippingHttp "go-bookstore/internal/shipping/http"
 	userHttp "go-bookstore/internal/user/http"
 	"go-bookstore/pkg/config"
 	"net/http"
@@ -67,6 +68,7 @@ func main() {
 	userHttp.Routes(r, db)
 	orderHttp.Routes(r, db)
 	locationHttp.Routes(r, db)
+	shippingHttp.Routes(r, db)
 
 	// Port to run
 	r.Run(":8080")

@@ -65,7 +65,13 @@ func (s *OrderService) GetOrderResponse(c *gin.Context, customerId int) (*model.
 			if err != nil {
 				return nil, err
 			}
-			orderResponse.Lines = append(orderResponse.Lines, orderLine)
+			var orderLineResponse model.OrderLineResponse
+			utils.Merge(&orderLineResponse, &orderLine)
+			orderLineResponse.Product, err = s.repo.GetProductById(c, orderLine.ProductId)
+			if err != nil {
+				return nil, err
+			}
+			orderResponse.Lines = append(orderResponse.Lines, &orderLineResponse)
 		}
 	}
 	return &orderResponse, nil
