@@ -7,8 +7,10 @@ import (
 	"go-bookstore/internal/product/model"
 	shippingHttp "go-bookstore/internal/shipping/http"
 	userHttp "go-bookstore/internal/user/http"
-	"go-bookstore/pkg/config"
+	"go-bookstore/pkg/dbs"
 	"net/http"
+
+	"go-bookstore/pkg/config"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,22 +29,14 @@ func corsMiddleware(c *gin.Context) {
 	} else {
 		c.AbortWithStatus(http.StatusOK)
 	}
-
-	// c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	// c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-	// c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-	// c.Writer.Header().Set("Access-Control-Allow-Credentials", "false")
-	// if c.Request.Method == "OPTIONS" {
-	// 	c.AbortWithStatus(204)
-	// 	return
-	// }
-	// c.Next()
 }
 
 func main() {
+	cfg := config.LoadConfig()
+
 	// Init database
-	config.Connect()
-	db := config.GetDB()
+	dbs.Connect(cfg.DatabaseURI)
+	db := dbs.GetDB()
 	db.AutoMigrate(&model.Product{})
 
 	// Init gin
@@ -71,5 +65,6 @@ func main() {
 	shippingHttp.Routes(r, db)
 
 	// Port to run
-	r.Run(":8080")
+	// r.Run(":8080")
+	r.Run(":" + cfg.HttpPort)
 }

@@ -8,12 +8,14 @@ import (
 
 	"errors"
 
+	"go-bookstore/pkg/config"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtKey = []byte("30092002")
+// var jwtKey = []byte("30092002")
 
 type IUserService interface {
 	Register(c *gin.Context, userReq *model.UserReq) error
@@ -42,6 +44,7 @@ func (s *UserService) Register(c *gin.Context, userReq *model.UserReq) error {
 }
 
 func (s *UserService) SignIn(c *gin.Context, userLogin *model.UserLogin) (string, int64, error) {
+	cfg := config.GetConfig()
 	user, err := s.repo.GetUserByEmail(c, userLogin.Email)
 	if err != nil {
 		return "", 0, err
@@ -59,7 +62,7 @@ func (s *UserService) SignIn(c *gin.Context, userLogin *model.UserLogin) (string
 		"exp": expTime,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenContent)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString([]byte(cfg.AuthSecret))
 	if err != nil {
 		return "", 0, errors.New("Failed to generate access token")
 	}
@@ -67,12 +70,13 @@ func (s *UserService) SignIn(c *gin.Context, userLogin *model.UserLogin) (string
 }
 
 func (s *UserService) SignOut(c *gin.Context) (string, error) {
+	cfg := config.GetConfig()
 	tokenContent := jwt.MapClaims{
 		"payload": "",
 		"exp":     time.Now().Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenContent)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString([]byte(cfg.AuthSecret))
 	if err != nil {
 		return "", errors.New("Failed to generate access token")
 	}

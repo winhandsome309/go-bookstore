@@ -1,26 +1,38 @@
 package config
 
 import (
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"path/filepath"
+	"runtime"
+
+	"github.com/caarlos0/env"
+	"github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
 )
 
-const (
-	DSN = "host=localhost user=postgres password=30092002 dbname=bookstore port=5432 sslmode=disable"
-)
-
-var (
-	db *gorm.DB
-)
-
-func Connect() {
-	d, err := gorm.Open(postgres.Open(DSN), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-	db = d
+type Config struct {
+	HttpPort    string `env:"http_port"`
+	AuthSecret  string `env:"auth_secret"`
+	DatabaseURI string `env:"database_uri"`
 }
 
-func GetDB() *gorm.DB {
-	return db
+var (
+	cfg Config
+)
+
+func LoadConfig() *Config {
+	_, filename, _, _ := runtime.Caller(0)
+	currentDir := filepath.Dir(filename)
+
+	err := godotenv.Load(filepath.Join(currentDir, "config.yaml"))
+	if err != nil {
+		log.Error(err)
+	}
+	if err := env.Parse(&cfg); err != nil {
+		log.Error(err)
+	}
+	return &cfg
+}
+
+func GetConfig() *Config {
+	return &cfg
 }
