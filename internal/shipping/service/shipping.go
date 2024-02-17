@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+	"fmt"
 	"go-bookstore/internal/shipping/model"
 	"go-bookstore/internal/shipping/repository"
 	"strconv"
@@ -55,11 +57,27 @@ func (s *ShippingService) Checkout(c *gin.Context, shipping *model.Shipping) err
 		if err != nil {
 			return err
 		}
+		// Update product quantity
+		product, err := s.repo.GetProductById(c, orderLine.ProductId)
+		if err != nil {
+			return nil
+		}
+		if orderLine.Quantity > product.Quantity {
+			return errors.New(fmt.Sprintf("Quantity of product %s is not enough", product.Title))
+		} else {
+			product.Quantity -= orderLine.Quantity
+			err = s.repo.UpdateProduct(c, product)
+			if err != nil {
+				return err
+			}
+		}
+		// Delete orderline
 		err = s.repo.DeleteOrderLineById(c, orderLine)
 		if err != nil {
 			return err
 		}
 	}
+
 	err = s.repo.DeleteOrder(c, order)
 	return err
 }

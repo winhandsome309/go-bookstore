@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	model_order "go-bookstore/internal/order/model"
+	model_product "go-bookstore/internal/product/model"
 	"go-bookstore/internal/shipping/model"
 	model_user "go-bookstore/internal/user/model"
 
@@ -20,6 +21,9 @@ type IShippingRepository interface {
 	DeleteOrder(c *gin.Context, order *model_order.Order) error
 	GetOrderLineById(c *gin.Context, orderLineId string) (*model_order.OrderLine, error)
 	DeleteOrderLineById(c *gin.Context, orderLine *model_order.OrderLine) error
+	GetProductById(c *gin.Context, id int) (*model_product.Product, error)
+	UpdateProduct(c *gin.Context, product *model_product.Product) error
+	DeleteProduct(c *gin.Context, product *model_product.Product) error
 }
 
 type ShippingRepository struct {
@@ -84,5 +88,24 @@ func (r *ShippingRepository) GetOrderLineById(c *gin.Context, orderLineId string
 
 func (r *ShippingRepository) DeleteOrderLineById(c *gin.Context, orderLine *model_order.OrderLine) error {
 	err := r.db.Delete(orderLine).Error
+	return err
+}
+
+func (r *ShippingRepository) GetProductById(c *gin.Context, id int) (*model_product.Product, error) {
+	var product model_product.Product
+	err := r.db.Where("id = ?", id).First(&product).Error
+	if err != nil {
+		return nil, err
+	}
+	return &product, nil
+}
+
+func (r *ShippingRepository) UpdateProduct(c *gin.Context, product *model_product.Product) error {
+	err := r.db.Save(&product).Error
+	return err
+}
+
+func (r *ShippingRepository) DeleteProduct(c *gin.Context, product *model_product.Product) error {
+	err := r.db.Delete(&product).Error
 	return err
 }

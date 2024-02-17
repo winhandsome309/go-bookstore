@@ -2,3 +2,4 @@ http_port: 8080
 auth_secret: 000000
 
 database_uri: host=localhost user=postgres password=30092002 dbname=bookstore port=5432 sslmode=disable
+# database_uri: postgres://root:b79es5F7RkaVCJrnK4uFrWgsBWsKlZhj@dpg-cn85tf8cmk4c739oqdk0-a/bookstore_bvs3
