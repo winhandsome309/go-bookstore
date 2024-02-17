@@ -75,6 +75,7 @@ func (h *UserHandlers) SignIn(c *gin.Context) {
 		return
 	}
 	maxAge := int(time.Now().Unix() + int64(60))
+	c.SetSameSite(http.SameSiteNoneMode)
 	c.SetCookie("Authorization", tokenString, maxAge, "/", "", false, false)
 
 	// http.SetCookie(c.Writer, &http.Cookie{
