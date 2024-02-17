@@ -55,7 +55,7 @@ func JWTAuth() gin.HandlerFunc {
 				return
 			}
 			maxAge := time.Now().Unix() + int64(60)
-			c.SetCookie("Authorization", tokenString, int(maxAge), "/", "", false, false)
+			c.SetCookie("Authorization", tokenString, int(maxAge), "/", "", true, false)
 		} else {
 			// c.AbortWithStatus(http.StatusUnauthorized)
 			c.Next()

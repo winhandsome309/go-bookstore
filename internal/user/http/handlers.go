@@ -111,7 +111,7 @@ func (h *UserHandlers) SignOut(c *gin.Context) {
 		})
 		return
 	}
-	c.SetCookie("Authorization", tokenString, -1, "/", "", false, false)
+	c.SetCookie("Authorization", tokenString, -1, "/", "", true, false)
 	c.JSON(http.StatusAccepted, gin.H{
 		"message": "Sign out successfully",
 	})
