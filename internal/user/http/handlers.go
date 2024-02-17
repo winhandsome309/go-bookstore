@@ -21,6 +21,16 @@ func NewUserHandlers(service service.IUserService) *UserHandlers {
 	return &UserHandlers{service: service}
 }
 
+// Register godoc
+//
+//	@Summary	register new account
+//	@Tags		users
+//	@Produce	json
+//
+//	@Param		userRequest	formData	model.UserReq	true	"formData"
+//
+//	@Success	200			{string}	string			"Register successfully"
+//	@Router		/auth/register [post]
 func (h *UserHandlers) Register(c *gin.Context) {
 	var userReq model.UserReq
 	if err := c.ShouldBind(&userReq); c.Request.Body == nil || err != nil {
@@ -38,6 +48,16 @@ func (h *UserHandlers) Register(c *gin.Context) {
 	})
 }
 
+// SignIn godoc
+//
+//	@Summary	user sign in
+//	@Tags		users
+//	@Produce	json
+//	@Security	ApiKeyAuth
+//	@Param		userLogin	formData	model.UserLogin	true	"formData"
+//
+//	@Success	200			{string}	string			"User signin successfully"
+//	@Router		/auth/signin [post]
 func (h *UserHandlers) SignIn(c *gin.Context) {
 	var userLogin model.UserLogin
 	if err := c.ShouldBind(&userLogin); c.Request.Body == nil || err != nil {
@@ -72,6 +92,14 @@ func (h *UserHandlers) SignIn(c *gin.Context) {
 	})
 }
 
+// SignOut godoc
+//
+//	@Summary	user sign out
+//	@Tags		users
+//	@Produce	json
+//	@Security	ApiKeyAuth
+//	@Success	200	{string}	string	"Sign out successfully"
+//	@Router		/auth/signout [post]
 func (h *UserHandlers) SignOut(c *gin.Context) {
 	// tokenString, err := h.service.SignOut(c)
 	tokenString, err := c.Cookie("Authorization")

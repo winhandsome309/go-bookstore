@@ -1,0 +1,587 @@
+basePath: /
+definitions:
+  go-bookstore_internal_location_model.Districts:
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+    type: object
+  go-bookstore_internal_location_model.Provinces:
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+    type: object
+  go-bookstore_internal_location_model.Wards:
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+    type: object
+  go-bookstore_internal_order_model.Order:
+    properties:
+      created_at:
+        type: string
+      customer_id:
+        type: integer
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      lines:
+        items:
+          type: integer
+        type: array
+      total_item:
+        type: integer
+      total_price:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  go-bookstore_internal_order_model.OrderLine:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      order_id:
+        type: integer
+      price:
+        type: integer
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  go-bookstore_internal_order_model.OrderLineResponse:
+    properties:
+      id:
+        type: integer
+      order_id:
+        type: integer
+      price:
+        type: integer
+      product:
+        $ref: '#/definitions/go-bookstore_internal_product_model.Product'
+      quantity:
+        type: integer
+    type: object
+  go-bookstore_internal_order_model.OrderResponse:
+    properties:
+      customer_id:
+        type: integer
+      id:
+        type: integer
+      lines:
+        items:
+          $ref: '#/definitions/go-bookstore_internal_order_model.OrderLineResponse'
+        type: array
+      total_item:
+        type: integer
+      total_price:
+        type: integer
+    type: object
+  go-bookstore_internal_product_model.Product:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      id:
+        type: integer
+      img_url:
+        type: string
+      language_id:
+        type: integer
+      price:
+        type: integer
+      quantity:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  go-bookstore_internal_shipping_model.Shipping:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      order_id:
+        type: integer
+      phone:
+        type: string
+      shipping_district:
+        type: string
+      shipping_province:
+        type: string
+      shipping_ward:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  go-bookstore_internal_user_model.User:
+    properties:
+      balance:
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: xuanthangnguyen2002@gmail.com
+    name: WinHandsome
+    url: https://web.facebook.com/winhandsomee/
+  description: This is a bookstore e-commerce application
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Go Bookstore Application
+  version: "1.0"
+paths:
+  /auth/register:
+    post:
+      parameters:
+      - in: formData
+        name: email
+        type: string
+      - in: formData
+        name: password
+        type: string
+      - in: formData
+        name: role
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Register successfully
+          schema:
+            type: string
+      summary: register new account
+      tags:
+      - users
+  /auth/signin:
+    post:
+      parameters:
+      - in: formData
+        name: email
+        type: string
+      - in: formData
+        name: password
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User signin successfully
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: user sign in
+      tags:
+      - users
+  /auth/signout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sign out successfully
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: user sign out
+      tags:
+      - users
+  /checkout:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/go-bookstore_internal_shipping_model.Shipping'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: get shipping info of user
+      tags:
+      - shipping
+    post:
+      parameters:
+      - in: formData
+        name: address
+        type: string
+      - in: formData
+        name: created_at
+        type: string
+      - in: formData
+        name: email
+        type: string
+      - in: formData
+        name: first_name
+        type: string
+      - in: formData
+        name: id
+        type: integer
+      - in: formData
+        name: last_name
+        type: string
+      - in: formData
+        name: order_id
+        type: integer
+      - in: formData
+        name: phone
+        type: string
+      - in: formData
+        name: shipping_district
+        type: string
+      - in: formData
+        name: shipping_province
+        type: string
+      - in: formData
+        name: shipping_ward
+        type: string
+      - in: formData
+        name: updated_at
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Checkout successfully
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: purchase order
+      tags:
+      - shipping
+  /checkout/:shippingId:
+    get:
+      parameters:
+      - description: query
+        in: query
+        name: shippingId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/go-bookstore_internal_shipping_model.Shipping'
+      security:
+      - ApiKeyAuth: []
+      summary: get shipping info by id
+      tags:
+      - shipping
+  /location/districts/:provinceId:
+    get:
+      parameters:
+      - description: Query
+        in: query
+        name: provinceId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/go-bookstore_internal_location_model.Districts'
+      summary: get districts by province id
+      tags:
+      - location
+  /location/provinces:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/go-bookstore_internal_location_model.Provinces'
+      summary: get all provinces in VN
+      tags:
+      - location
+  /location/wards/:districtId:
+    get:
+      parameters:
+      - description: Query
+        in: query
+        name: districtId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/go-bookstore_internal_location_model.Wards'
+      summary: get wards by district id
+      tags:
+      - location
+  /orderlines:
+    delete:
+      parameters:
+      - description: formData
+        in: formData
+        name: product_id
+        required: true
+        type: string
+      - description: formData
+        in: formData
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/go-bookstore_internal_order_model.Order'
+      security:
+      - ApiKeyAuth: []
+      summary: delete orderlines by product_id and order_id
+      tags:
+      - orderlines
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/go-bookstore_internal_order_model.OrderLine'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: get all orderlines of user
+      tags:
+      - orderlines
+  /orders:
+    delete:
+      parameters:
+      - description: Query
+        in: query
+        name: orderId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "delete\tsuccessfully"
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: delete order
+      tags:
+      - orders
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/go-bookstore_internal_order_model.OrderResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: get order of user
+      tags:
+      - orders
+    post:
+      parameters:
+      - in: formData
+        name: created_at
+        type: string
+      - in: formData
+        name: id
+        type: integer
+      - in: formData
+        name: order_id
+        type: integer
+      - in: formData
+        name: price
+        type: integer
+      - in: formData
+        name: product_id
+        type: integer
+      - in: formData
+        name: quantity
+        type: integer
+      - in: formData
+        name: updated_at
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: add successfully
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update or create orderline
+      tags:
+      - orders
+  /products:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/go-bookstore_internal_user_model.User'
+      summary: get all products
+      tags:
+      - products
+    post:
+      parameters:
+      - description: body
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/go-bookstore_internal_product_model.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/go-bookstore_internal_product_model.Product'
+            type: array
+      summary: create new product
+      tags:
+      - products
+  /products/:id:
+    delete:
+      parameters:
+      - description: query
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete successfully
+          schema:
+            type: string
+      summary: delete product
+      tags:
+      - products
+    get:
+      parameters:
+      - description: query
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/go-bookstore_internal_product_model.Product'
+            type: array
+      summary: get product by id
+      tags:
+      - products
+    patch:
+      parameters:
+      - description: query
+        in: query
+        name: id
+        required: true
+        type: string
+      - in: formData
+        name: description
+        type: string
+      - in: formData
+        name: img_url
+        type: string
+      - in: formData
+        name: price
+        type: integer
+      - in: formData
+        name: quantity
+        type: integer
+      - in: formData
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/go-bookstore_internal_product_model.Product'
+            type: array
+      summary: update product info
+      tags:
+      - products
+swagger: "2.0"

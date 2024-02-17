@@ -1,16 +1,19 @@
 package main
 
 import (
+	_ "go-bookstore/docs"
 	locationHttp "go-bookstore/internal/location/http"
 	orderHttp "go-bookstore/internal/order/http"
 	productHttp "go-bookstore/internal/product/http"
 	"go-bookstore/internal/product/model"
 	shippingHttp "go-bookstore/internal/shipping/http"
 	userHttp "go-bookstore/internal/user/http"
+	"go-bookstore/pkg/config"
 	"go-bookstore/pkg/dbs"
 	"net/http"
 
-	"go-bookstore/pkg/config"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,6 +33,20 @@ func corsMiddleware(c *gin.Context) {
 		c.AbortWithStatus(http.StatusOK)
 	}
 }
+
+//	@title			Go Bookstore Application
+//	@description	This is a bookstore e-commerce application
+//	@version		1.0
+//	@termsOfService	http://swagger.io/terms/
+
+//	@contact.name	WinHandsome
+//	@contact.url	https://web.facebook.com/winhandsomee/
+//	@contact.email	xuanthangnguyen2002@gmail.com
+
+// @license.name	Apache 2.0
+// @license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+// @host			localhost:8080
+// @BasePath		/
 
 func main() {
 	cfg := config.LoadConfig()
@@ -63,6 +80,9 @@ func main() {
 	orderHttp.Routes(r, db)
 	locationHttp.Routes(r, db)
 	shippingHttp.Routes(r, db)
+
+	// Init swagger
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Port to run
 	// r.Run(":8080")

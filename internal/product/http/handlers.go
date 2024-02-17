@@ -21,6 +21,14 @@ func NewProductHandler(service service.IProductService) *ProductHandler {
 	return &ProductHandler{service: service}
 }
 
+// GetAllProduct godoc
+//
+//	@Summary	get all products
+//	@Tags		products
+//	@Produce	json
+//	@Success	200	{array}		model.Product
+//	@Success	200	{object}	model_user.User
+//	@Router		/products [get]
 func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 	products, err := h.service.GetAllProduct(c)
 	if err != nil {
@@ -49,6 +57,16 @@ func (h *ProductHandler) GetAllProduct(c *gin.Context) {
 	}
 }
 
+// GetProductById godoc
+//
+//	@Summary	get product by id
+//	@Tags		products
+//	@Produce	json
+//
+//	@Param		id	query	string	true	"query"
+//
+//	@Success	200	{array}	model.Product
+//	@Router		/products/:id [get]
 func (h *ProductHandler) GetProductById(c *gin.Context) {
 	id := c.Param("id")
 	productId, _ := strconv.Atoi(id)
@@ -61,6 +79,17 @@ func (h *ProductHandler) GetProductById(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
+// CreateProduct godoc
+//
+//	@Summary	create new product
+//	@Tags		products
+//	@Produce	json
+//
+//	@Param		product	body		model.Product	true	"body"
+//
+//	@Success	200		{string}	string			"Create successfully"
+//	@Success	200		{array}		model.Product
+//	@Router		/products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var productNew model.Product
 	if err := c.ShouldBind(&productNew); c.Request.Body == nil || err != nil {
@@ -82,6 +111,18 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	})
 }
 
+// UpdateProduct godoc
+//
+//	@Summary	update product info
+//	@Tags		products
+//	@Produce	json
+//
+//	@Param		id			query		string					true	"query"
+//	@Param		requeset	formData	model.UpdateProductReq	true	"formData"
+//
+//	@Success	200			{string}	string					"Update successfully"
+//	@Success	200			{array}		model.Product
+//	@Router		/products/:id [patch]
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	id := c.Param("id")
 	var req model.UpdateProductReq
@@ -103,6 +144,16 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	})
 }
 
+// DeleteProduct godoc
+//
+//	@Summary	delete product
+//	@Tags		products
+//	@Produce	json
+//
+//	@Param		id	query		string	true	"query"
+//
+//	@Success	200	{string}	string	"Delete successfully"
+//	@Router		/products/:id [delete]
 func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 	id := c.Param("id")
 	productId, _ := strconv.Atoi(id)

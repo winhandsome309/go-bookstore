@@ -19,6 +19,14 @@ func NewOrderHandler(service service.IOrderService) *OrderHandler {
 	return &OrderHandler{service: service}
 }
 
+// GetOrder godoc
+//
+//	@Summary	get order of user
+//	@Tags		orders
+//	@Produce	json
+//	@Security	ApiKeyAuth
+//	@Success	200	{object}	model.OrderResponse
+//	@Router		/orders [get]
 func (h *OrderHandler) GetOrder(c *gin.Context) {
 	// Get user through cookie
 	user, ok := c.Get("user")
@@ -42,6 +50,17 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 	})
 }
 
+// DeleteOrder godoc
+//
+//	@Summary	delete order
+//	@Tags		orders
+//	@Produce	json
+//	@Security	ApiKeyAuth
+//	@Param		orderId	query		string	true	"Query"
+//
+//	@Success	200		{string}	string	"delete	successfully"
+//
+//	@Router		/orders [delete]
 func (h *OrderHandler) DeleteOrder(c *gin.Context) {
 	id := c.Param("orderId")
 	orderId, err := strconv.Atoi(id)
@@ -65,6 +84,15 @@ func (h *OrderHandler) DeleteOrder(c *gin.Context) {
 	})
 }
 
+// GetOrderLines godoc
+//
+//	@Summary	get all orderlines of user
+//	@Tags		orderlines
+//	@Produce	json
+//	@Security	ApiKeyAuth
+//	@Success	200	{array}	model.OrderLine
+//
+//	@Router		/orderlines [get]
 func (h *OrderHandler) GetOrderLines(c *gin.Context) {
 	user, ok := c.Get("user")
 	if !ok {
@@ -86,6 +114,15 @@ func (h *OrderHandler) GetOrderLines(c *gin.Context) {
 	})
 }
 
+// CreateUpdateOrderLine godoc
+//
+//	@Summary	update or create orderline
+//	@Tags		orders
+//	@Produce	json
+//	@Security	ApiKeyAuth
+//	@Param		orderLine	formData	model.OrderLine	true	"formData"
+//	@Success	200			{string}	string			"add successfully"
+//	@Router		/orders [post]
 func (h *OrderHandler) CreateUpdateOrderLine(c *gin.Context) {
 	var orderLine model.OrderLine
 	if err := c.ShouldBind(&orderLine); c.Request.Body == nil || err != nil {
@@ -116,6 +153,19 @@ func (h *OrderHandler) CreateUpdateOrderLine(c *gin.Context) {
 	})
 }
 
+// DeleteOrderLineById godoc
+//
+//	@Summary	delete orderlines by product_id and order_id
+//	@Tags		orderlines
+//	@Produce	json
+//	@Security	ApiKeyAuth
+//	@Param		product_id	formData	string	true	"formData"
+//	@Param		order_id	formData	string	true	"formData"
+//	@Success	200			{string}	string	"remove successfully"
+//
+//	@Success	200			{object}	model.Order
+//
+//	@Router		/orderlines [delete]
 func (h *OrderHandler) DeleteOrderLineById(c *gin.Context) {
 	productId := c.PostForm("product_id")
 	orderId := c.PostForm("order_id")
