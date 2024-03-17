@@ -42,6 +42,9 @@ func (s *ShippingService) GetShippingById(c *gin.Context, shippingId string) (*m
 
 func (s *ShippingService) Checkout(c *gin.Context, shipping *model.Shipping) error {
 	err := s.repo.Checkout(c, shipping)
+	if err != nil {
+		return err
+	}
 	order, err := s.repo.GetOrderById(c, strconv.Itoa(shipping.OrderId))
 	if err != nil {
 		return err
@@ -52,6 +55,9 @@ func (s *ShippingService) Checkout(c *gin.Context, shipping *model.Shipping) err
 	}
 	user.Balance -= order.TotalPrice
 	err = s.repo.UpdateUser(c, user)
+	if err != nil {
+		return err
+	}
 	for _, orderLineId := range order.Lines {
 		orderLine, err := s.repo.GetOrderLineById(c, strconv.Itoa(orderLineId))
 		if err != nil {

@@ -15,8 +15,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// var jwtKey = []byte("30092002")
-
 type IUserService interface {
 	Register(c *gin.Context, userReq *model.UserReq) error
 	SignIn(c *gin.Context, userLogin *model.UserLogin) (string, int64, error)
