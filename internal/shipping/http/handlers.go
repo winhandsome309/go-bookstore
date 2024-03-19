@@ -6,6 +6,9 @@ import (
 
 	"net/http"
 
+	b64 "encoding/base64"
+	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
@@ -74,14 +77,26 @@ func (h *ShippingHandlers) GetShippingById(c *gin.Context) {
 //	@Success	200			{string}	string			"Checkout successfully"
 //	@Router		/checkout [post]
 func (h *ShippingHandlers) Checkout(c *gin.Context) {
-	var shipping model.Shipping
-	if err := c.ShouldBind(&shipping); c.Request.Body == nil || err != nil {
+	var body map[string]interface{}
+	if err := c.ShouldBind(&body); c.Request.Body == nil || err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "get fail",
 		})
 		return
 	}
+	extraData, ok := body["extraData"]
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "something wrong",
+		})
+	}
+
+	// Decoding b64
+	extraDataDec, _ := b64.StdEncoding.DecodeString(extraData.(string))
+	var shipping model.Shipping
+	_ = json.Unmarshal(extraDataDec, &shipping)
+
 	err := h.service.Checkout(c, &shipping)
 	if err != nil {
 		log.Error(err)

@@ -53,7 +53,7 @@ func (s *ShippingService) Checkout(c *gin.Context, shipping *model.Shipping) err
 	if err != nil {
 		return err
 	}
-	user.Balance -= order.TotalPrice
+	// user.Balance -= order.TotalPrice
 	err = s.repo.UpdateUser(c, user)
 	if err != nil {
 		return err

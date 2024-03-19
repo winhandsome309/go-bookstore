@@ -4,6 +4,7 @@ import (
 	_ "go-bookstore/docs"
 	locationHttp "go-bookstore/internal/location/http"
 	orderHttp "go-bookstore/internal/order/http"
+	paymentHttp "go-bookstore/internal/payment/http"
 	productHttp "go-bookstore/internal/product/http"
 	"go-bookstore/internal/product/model"
 	shippingHttp "go-bookstore/internal/shipping/http"
@@ -81,6 +82,7 @@ func main() {
 	orderHttp.Routes(r, db)
 	locationHttp.Routes(r, db)
 	shippingHttp.Routes(r, db)
+	paymentHttp.Routes(r, db)
 
 	// Init swagger
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

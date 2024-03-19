@@ -15,6 +15,7 @@ require (
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/anaskhan96/soup v1.2.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-openapi/jsonpointer v0.20.2 // indirect
 	github.com/go-openapi/jsonreference v0.20.4 // indirect
@@ -28,6 +29,9 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
+	github.com/tidwall/gjson v1.17.1 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	golang.org/x/tools v0.18.0 // indirect
 )
 

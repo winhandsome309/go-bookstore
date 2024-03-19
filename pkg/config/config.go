@@ -10,9 +10,11 @@ import (
 )
 
 type Config struct {
-	HttpPort    string `env:"http_port"`
-	AuthSecret  string `env:"auth_secret"`
-	DatabaseURI string `env:"database_uri"`
+	HttpPort     string `env:"http_port"`
+	HostBackend  string `env:"host_backend"`
+	HostFrontend string `env:"host_frontend"`
+	AuthSecret   string `env:"auth_secret"`
+	DatabaseURI  string `env:"database_uri"`
 }
 
 var (
