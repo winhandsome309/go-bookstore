@@ -96,7 +96,7 @@ func (h *PaymentHandler) Payment(c *gin.Context) {
 	resp, err := http.Get("http://127.0.0.1:4040/api/tunnels")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "a",
+			"err": err,
 		})
 		return
 	}
