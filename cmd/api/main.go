@@ -20,8 +20,8 @@ import (
 )
 
 func corsMiddleware(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-	// c.Header("Access-Control-Allow-Origin", "https://bookstore-fe-v8ch.onrender.com")
+	// c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
+	c.Header("Access-Control-Allow-Origin", "https://bookstore-fe-one.vercel.app")
 	c.Header("Access-Control-Allow-Methods", "*")
 	c.Header("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
 	c.Header("Content-Type", "application/json")
