@@ -22,8 +22,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	b64 "encoding/base64"
-
-	"github.com/tidwall/gjson"
 )
 
 type Payload struct {
@@ -93,30 +91,31 @@ func (h *PaymentHandler) Payment(c *gin.Context) {
 	cfg := config.GetConfig()
 
 	// Get host of ngrok
-	resp, err := http.Get("http://127.0.0.1:4040/api/tunnels")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
-		})
-		return
-	}
-	defer resp.Body.Close()
+	// resp, err := http.Get("http://127.0.0.1:4040/api/tunnels")
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"err": err,
+	// 	})
+	// 	return
+	// }
+	// defer resp.Body.Close()
 
-	bodyRead, err := io.ReadAll(resp.Body)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "b",
-		})
-		return
-	}
-	bodyRes := gjson.Get(string(bodyRead), "tunnels.0.public_url")
-	if !bodyRes.Exists() {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"msg": "c",
-		})
-		return
-	}
-	tunnelURL := bodyRes.String()
+	// bodyRead, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"msg": "b",
+	// 	})
+	// 	return
+	// }
+	// bodyRes := gjson.Get(string(bodyRead), "tunnels.0.public_url")
+	// if !bodyRes.Exists() {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"msg": "c",
+	// 	})
+	// 	return
+	// }
+	// tunnelURL := bodyRes.String()
+	tunnelURL := cfg.HostBackend
 	notifyUrl := tunnelURL + "/checkout"
 
 	returnUrl := cfg.HostFrontend
