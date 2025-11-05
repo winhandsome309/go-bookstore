@@ -1,9 +1,12 @@
 http_port: 8080
 auth_secret: 000000
-# host_backend: http://localhost:8080
-# host_frontend: http://localhost:3000
-host_backend: https://go-bookstore-opbz.onrender.com
-host_frontend: https://bookstore-fe-one.vercel.app
 
-# database_uri: host=localhost user=postgres password=30092002 dbname=bookstore port=5432 sslmode=disable
-database_uri: postgres://admin:O2yZrcGVjahpg89OMyFEmTwf9sSROMTH@dpg-cpg7e00l5elc738p2s9g-a.singapore-postgres.render.com/bookstore_db_iym5
+# Local
+host_backend: http://localhost:8080
+host_frontend: http://localhost:3000
+database_uri: host=localhost user=postgres password=postgres dbname=bookstore port=5432 sslmode=disable
+
+# Production
+# host_backend: https://go-bookstore-opbz.onrender.com
+# host_frontend: https://bookstore-fe-one.vercel.app
+# database_uri: postgres://admin:O2yZrcGVjahpg89OMyFEmTwf9sSROMTH@dpg-cpg7e00l5elc738p2s9g-a.singapore-postgres.render.com/bookstore_db_iym5

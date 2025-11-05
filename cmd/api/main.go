@@ -12,7 +12,9 @@ import (
 	"go-bookstore/pkg/config"
 	"go-bookstore/pkg/dbs"
 	"net/http"
+	"os"
 
+	log "github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
@@ -51,12 +53,20 @@ func corsMiddleware(c *gin.Context) {
 // @BasePath		/
 
 func main() {
+	log.SetFormatter(&log.TextFormatter{})
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
+
 	cfg := config.LoadConfig()
+	log.Infof("Starting server on port %s", cfg.HttpPort)
 
 	// Init database
+	log.Info("Connecting to database...")
 	dbs.Connect(cfg.DatabaseURI)
 	db := dbs.GetDB()
+	log.Info("Running database migrations...")
 	db.AutoMigrate(&model.Product{})
+	log.Info("Database connected successfully")
 
 	// Init gin
 	gin.SetMode(gin.ReleaseMode)
@@ -77,6 +87,12 @@ func main() {
 	// }))
 
 	// Init servers
+	log.Info("Registering routes...")
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Hello World",
+		})
+	})
 	productHttp.Routes(r, db)
 	userHttp.Routes(r, db)
 	orderHttp.Routes(r, db)
@@ -88,6 +104,8 @@ func main() {
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Port to run
-	// r.Run(":8080")
-	r.Run(":" + cfg.HttpPort)
+	log.Infof("Server starting on :%s", cfg.HttpPort)
+	if err := r.Run(":" + cfg.HttpPort); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
