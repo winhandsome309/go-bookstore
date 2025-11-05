@@ -90,7 +90,7 @@ func main() {
 	log.Info("Registering routes...")
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello World",
+			"message": "Hello Win",
 		})
 	})
 	productHttp.Routes(r, db)
